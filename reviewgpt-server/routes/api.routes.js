@@ -15,9 +15,9 @@ router.post('/review', async (req,res)=>{
 
     const response = await openai.createCompletion({
   model: "text-davinci-003",
-  prompt: `Write a ${category} review based on these notes: ${prompt}`,
+  prompt: `Write a ${category} review based on these notes: ${prompt}.Elaborate with your own words or synonyms, to 'humazine' the text.`,
   temperature: 0.5,
-  max_tokens: 64,
+  max_tokens: 70,
   top_p: 1.0,
   frequency_penalty: 0.0,
   presence_penalty: 0.0,
