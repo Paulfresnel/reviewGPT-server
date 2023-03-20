@@ -3,7 +3,15 @@ const { Schema, model } = require("mongoose");
 // TODO: Please make sure you edit the User model to whatever makes sense in this case
 const reviewSchema = new Schema(
   {
-    prompt: {
+    placeName: {
+      type: String,
+      required: true
+    },
+    promptNotes: {
+      type: String,
+      required: true
+    },
+    language: {
       type: String,
       required: true
     },

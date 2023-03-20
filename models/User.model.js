@@ -22,6 +22,10 @@ const userSchema = new Schema(
       type: Number,
       default: 500
     },
+    userStatus: {
+      type: String,
+      enum: ["basic", "premium"]
+    },
     reviews: [{
       type: Schema.Types.ObjectId, ref: "Review"
     }]    

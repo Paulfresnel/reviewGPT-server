@@ -13,14 +13,15 @@ const openai = new OpenAIApi(configuration);
 router.post('/review', async (req,res)=>{
     console.log("prompt", req.body.prompt)
     console.log("category", req.body.category)
-    let {category, prompt, userId} = req.body
-
+    let {category, promptNotes, language, placeName, userId} = req.body
+    let promptBuiltIn= 'Name:' + ' ' +placeName + '.' + ' ' + promptNotes +'.'+` Write in ${language}`
+    const builtPrompt = `Write a ${category} review based on these notes: ${promptBuiltIn}. Use synonyms and rich text, to humazine your answer. Don't repeat words.`
     const userFound = await User.findById(userId)
   console.log("user Found: " + userFound)
   if(userFound.credits > 0){
     const response = await openai.createCompletion({
   model: "text-davinci-003",
-  prompt: `Write a ${category} review based on these notes: ${prompt}.Elaborate with your own words or synonyms, to 'humazine' the text.`,
+  prompt: builtPrompt,
   temperature: 0.5,
   max_tokens: 70,
   top_p: 1.0,
@@ -30,8 +31,8 @@ router.post('/review', async (req,res)=>{
     console.log(response.data)
     let totalTokensConsumed = response.data.usage.total_tokens
     console.log('tokens used: ',totalTokensConsumed)
-
-    User.findByIdAndUpdate(userId, {credits: userFound.credits - totalTokensConsumed}, {new:true})
+  const reviewCreated = await Review.create({language:language, placeName:placeName, promptNotes:promptNotes, gptResponse: response.data.choices[0].text, category: category })
+    User.findByIdAndUpdate(userId,  { $push: { reviews: reviewCreated._id }, credits: userFound.credits - totalTokensConsumed }, {new:true})
       .then(userUpdated=>{
         console.log(userUpdated)
         res.json({promptResponse: response.data, userUpdated: userUpdated})
@@ -53,8 +54,8 @@ router.get('/user/:userId', (req,res)=>{
   User.findById(userId).populate('reviews')
     .then(response=>{
       console.log(response)
-      let {name, _id, credits, reviews} = response
-      res.json({user: name, _id, credits, reviews})
+      let {name, _id, credits, reviews, userStatus} = response
+      res.json({user: name, _id, credits, reviews, userStatus})
       
     })
 })
