@@ -24,7 +24,8 @@ const userSchema = new Schema(
     },
     userStatus: {
       type: String,
-      enum: ["basic", "premium"]
+      enum: ["basic", "premium"],
+      default: "basic"
     },
     reviews: [{
       type: Schema.Types.ObjectId, ref: "Review"
