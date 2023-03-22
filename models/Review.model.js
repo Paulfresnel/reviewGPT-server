@@ -21,7 +21,7 @@ const reviewSchema = new Schema(
     },
     category: {
       type: String,
-      enum: ["Restaurant", "Bar", "Event",  "Hotel",  "Appartment", "Video", "Retail Store", "Corporate Office", "Company", "Entertainment"],
+      enum: ["Restaurant","Gym", "Bar", "Event",  "Hotel",  "Appartment", "Video", "Retail Store", "Corporate Office", "Museum",  "Company", "Entertainment"],
     }
   },
   {
