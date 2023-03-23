@@ -60,4 +60,18 @@ router.get('/user/:userId', (req,res)=>{
     })
 })
 
+router.get('/user', (req,res)=>{
+  User.find().populate('reviews')
+    .then(response=>{
+      response.map(user=>{
+        user.password = ""
+        user.email = ""
+      })
+      res.json({users: response})
+      /* let {name, _id, credits, reviews, userStatus} = response
+      res.json({user: name, _id, credits, reviews, userStatus}) */
+      
+    })
+})
+
 module.exports = router;
